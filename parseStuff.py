@@ -69,6 +69,18 @@ def init_stuff_dict() -> dict:
     data['damage']['bonus'] = {}
     data['damage']['malus'] = {}
 
+    data['initiative'] = {}
+    data['initiative']['bonus'] = {}
+    data['initiative']['malus'] = {}
+
+    data['movementpoint'] = {}
+    data['movementpoint']['bonus'] = {}
+    data['movementpoint']['malus'] = {}
+
+    data['actionpoint'] = {}
+    data['actionpoint']['bonus'] = {}
+    data['actionpoint']['malus'] = {}
+
 
     return data
 
@@ -85,36 +97,60 @@ def parse_effect(parsed_html: BeautifulSoup) -> dict:
             data_dict['vitality']['bonus']['min'] = li.get('data-bonus-vitality-min')
         if not li.get('data-bonus-vitality-min') is None:
             data_dict['vitality']['bonus']['max'] = li.get('data-bonus-vitality-max')
+        if not li.get('data-malus-vitality-min') is None:
+            data_dict['vitality']['malus']['min'] = li.get('data-malus-vitality-min')
+        if not li.get('data-malus-vitality-min') is None:
+            data_dict['vitality']['malus']['max'] = li.get('data-malus-vitality-max')
 
         # get wisdom
         if not li.get('data-bonus-wisdom-min') is None:
             data_dict['wisdom']['bonus']['min'] = li.get('data-bonus-wisdom-min')
         if not li.get('data-bonus-wisdom-min') is None:
             data_dict['wisdom']['bonus']['max'] = li.get('data-bonus-wisdom-max')
+        if not li.get('data-malus-wisdom-min') is None:
+            data_dict['wisdom']['malus']['min'] = li.get('data-malus-wisdom-min')
+        if not li.get('data-malus-wisdom-min') is None:
+            data_dict['wisdom']['malus']['max'] = li.get('data-malus-wisdom-max')
 
         # get intelligence
         if not li.get('data-bonus-intelligence-min') is None:
             data_dict['intelligence']['bonus']['min'] = li.get('data-bonus-intelligence-min')
         if not li.get('data-bonus-intelligence-max') is None:
             data_dict['intelligence']['bonus']['max'] = li.get('data-bonus-intelligence-max')
+        if not li.get('data-malus-intelligence-min') is None:
+            data_dict['intelligence']['malus']['min'] = li.get('data-malus-intelligence-min')
+        if not li.get('data-malus-intelligence-max') is None:
+            data_dict['intelligence']['malus']['max'] = li.get('data-malus-intelligence-max')
 
         # get strength
         if not li.get('data-bonus-strength-min') is None:
             data_dict['strength']['bonus']['min'] = li.get('data-bonus-strength-min')
         if not li.get('data-bonus-strength-max') is None:
             data_dict['strength']['bonus']['max'] = li.get('data-bonus-strength-max')
+        if not li.get('data-malus-strength-min') is None:
+            data_dict['strength']['malus']['min'] = li.get('data-malus-strength-min')
+        if not li.get('data-malus-strength-max') is None:
+            data_dict['strength']['malus']['max'] = li.get('data-malus-strength-max')
 
         # get agility
         if not li.get('data-bonus-agility-min') is None:
             data_dict['agility']['bonus']['min'] = li.get('data-bonus-agility-min')
         if not li.get('data-bonus-agility-min') is None:
             data_dict['agility']['bonus']['max'] = li.get('data-bonus-agility-max')
+        if not li.get('data-malus-agility-min') is None:
+            data_dict['agility']['malus']['min'] = li.get('data-malus-agility-min')
+        if not li.get('data-malus-agility-min') is None:
+            data_dict['agility']['malus']['max'] = li.get('data-malus-agility-max')
 
         # get chance
         if not li.get('data-bonus-chance-min') is None:
             data_dict['chance']['bonus']['min'] = li.get('data-bonus-chance-min')
         if not li.get('data-bonus-chance-min') is None:
             data_dict['chance']['bonus']['max'] = li.get('data-bonus-chance-max')
+        if not li.get('data-malus-chance-min') is None:
+            data_dict['chance']['malus']['min'] = li.get('data-malus-chance-min')
+        if not li.get('data-malus-chance-min') is None:
+            data_dict['chance']['malus']['max'] = li.get('data-malus-chance-max')
 
         # get intelligence resistance
         if not li.get('data-bonus-fire-resistance-min') is None:
@@ -182,5 +218,22 @@ def parse_effect(parsed_html: BeautifulSoup) -> dict:
         if not li.get('data-bonus-damage-max') is None:
             data_dict['damage']['bonus']['max'] = li.get('data-bonus-damage-max')
 
-    # print(data_dict)
+        # get initiative
+        if not li.get('data-bonus-initiative-min') is None:
+            data_dict['initiative']['bonus']['min'] = li.get('data-bonus-initiative-min')
+        if not li.get('data-bonus-initiative-min') is None:
+            data_dict['initiative']['bonus']['max'] = li.get('data-bonus-initiative-max')
+
+        # get movementpoint
+        if not li.get('data-bonus-movementpoint-min') is None:
+            data_dict['movementpoint']['bonus']['min'] = li.get('data-bonus-movementpoint-min')
+        if not li.get('data-bonus-movementpoint-min') is None:
+            data_dict['movementpoint']['bonus']['max'] = li.get('data-bonus-movementpoint-max')
+
+        # get actionpoint
+        if not li.get('data-bonus-actionpoint-min') is None:
+            data_dict['actionpoint']['bonus']['min'] = li.get('data-bonus-actionpoint-min')
+        if not li.get('data-bonus-actionpoint-min') is None:
+            data_dict['actionpoint']['bonus']['max'] = li.get('data-bonus-actionpoint-max')
+
     return data_dict

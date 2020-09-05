@@ -47,8 +47,10 @@ def parse_url(url: str) -> json:
 
 
 if __name__ == "__main__":
-    url: str = "https://solomonk.fr/fr/equipement/8876/"
+    url: str = "https://solomonk.fr/fr/equipement/948/abracape"
     if check_url(url):
-        parse_url(url)
+        data: json = parse_url(url)
+        with open(f"out/{data['id']}.json", "w") as f:
+            f.write(json.dumps(data))
     else:
         raise Exception('Incorrect url')
