@@ -68,6 +68,9 @@ def init_stuff_dict() -> dict:
     data['damage'] = {}
     data['damage']['bonus'] = {}
     data['damage']['malus'] = {}
+    data['damage']['percent'] = {}
+    data['damage']['percent']['bonus'] = {}
+    data['damage']['percent']['malus'] = {}
 
     data['initiative'] = {}
     data['initiative']['bonus'] = {}
@@ -81,6 +84,9 @@ def init_stuff_dict() -> dict:
     data['actionpoint']['bonus'] = {}
     data['actionpoint']['malus'] = {}
 
+    data['pod'] = {}
+    data['pod']['bonus'] = {}
+    data['pod']['malus'] = {}
 
     return data
 
@@ -93,147 +99,165 @@ def parse_effect(parsed_html: BeautifulSoup) -> dict:
     data_dict: dict = init_stuff_dict()
     for li in data:
         # get vitality
-        if not li.get('data-bonus-vitality-min') is None:
+        if li.get('data-bonus-vitality-min'):
             data_dict['vitality']['bonus']['min'] = li.get('data-bonus-vitality-min')
-        if not li.get('data-bonus-vitality-min') is None:
+        if li.get('data-bonus-vitality-min'):
             data_dict['vitality']['bonus']['max'] = li.get('data-bonus-vitality-max')
-        if not li.get('data-malus-vitality-min') is None:
+        # malus
+        if li.get('data-malus-vitality-min'):
             data_dict['vitality']['malus']['min'] = li.get('data-malus-vitality-min')
-        if not li.get('data-malus-vitality-min') is None:
+        if li.get('data-malus-vitality-min'):
             data_dict['vitality']['malus']['max'] = li.get('data-malus-vitality-max')
 
         # get wisdom
-        if not li.get('data-bonus-wisdom-min') is None:
+        if li.get('data-bonus-wisdom-min'):
             data_dict['wisdom']['bonus']['min'] = li.get('data-bonus-wisdom-min')
-        if not li.get('data-bonus-wisdom-min') is None:
+        if li.get('data-bonus-wisdom-min'):
             data_dict['wisdom']['bonus']['max'] = li.get('data-bonus-wisdom-max')
-        if not li.get('data-malus-wisdom-min') is None:
+        # malus
+        if li.get('data-malus-wisdom-min'):
             data_dict['wisdom']['malus']['min'] = li.get('data-malus-wisdom-min')
-        if not li.get('data-malus-wisdom-min') is None:
+        if li.get('data-malus-wisdom-min'):
             data_dict['wisdom']['malus']['max'] = li.get('data-malus-wisdom-max')
 
         # get intelligence
-        if not li.get('data-bonus-intelligence-min') is None:
+        if li.get('data-bonus-intelligence-min'):
             data_dict['intelligence']['bonus']['min'] = li.get('data-bonus-intelligence-min')
-        if not li.get('data-bonus-intelligence-max') is None:
+        if li.get('data-bonus-intelligence-max'):
             data_dict['intelligence']['bonus']['max'] = li.get('data-bonus-intelligence-max')
-        if not li.get('data-malus-intelligence-min') is None:
+        # malus
+        if li.get('data-malus-intelligence-min'):
             data_dict['intelligence']['malus']['min'] = li.get('data-malus-intelligence-min')
-        if not li.get('data-malus-intelligence-max') is None:
+        if li.get('data-malus-intelligence-max'):
             data_dict['intelligence']['malus']['max'] = li.get('data-malus-intelligence-max')
 
         # get strength
-        if not li.get('data-bonus-strength-min') is None:
+        if li.get('data-bonus-strength-min'):
             data_dict['strength']['bonus']['min'] = li.get('data-bonus-strength-min')
-        if not li.get('data-bonus-strength-max') is None:
+        if li.get('data-bonus-strength-max'):
             data_dict['strength']['bonus']['max'] = li.get('data-bonus-strength-max')
-        if not li.get('data-malus-strength-min') is None:
+        # malus
+        if li.get('data-malus-strength-min'):
             data_dict['strength']['malus']['min'] = li.get('data-malus-strength-min')
-        if not li.get('data-malus-strength-max') is None:
+        if li.get('data-malus-strength-max'):
             data_dict['strength']['malus']['max'] = li.get('data-malus-strength-max')
 
         # get agility
-        if not li.get('data-bonus-agility-min') is None:
+        if li.get('data-bonus-agility-min'):
             data_dict['agility']['bonus']['min'] = li.get('data-bonus-agility-min')
-        if not li.get('data-bonus-agility-min') is None:
+        if li.get('data-bonus-agility-min'):
             data_dict['agility']['bonus']['max'] = li.get('data-bonus-agility-max')
-        if not li.get('data-malus-agility-min') is None:
+        # malus
+        if li.get('data-malus-agility-min'):
             data_dict['agility']['malus']['min'] = li.get('data-malus-agility-min')
-        if not li.get('data-malus-agility-min') is None:
+        if li.get('data-malus-agility-min'):
             data_dict['agility']['malus']['max'] = li.get('data-malus-agility-max')
 
         # get chance
-        if not li.get('data-bonus-chance-min') is None:
+        if li.get('data-bonus-chance-min'):
             data_dict['chance']['bonus']['min'] = li.get('data-bonus-chance-min')
-        if not li.get('data-bonus-chance-min') is None:
+        if li.get('data-bonus-chance-min'):
             data_dict['chance']['bonus']['max'] = li.get('data-bonus-chance-max')
-        if not li.get('data-malus-chance-min') is None:
+        # malus
+        if li.get('data-malus-chance-min'):
             data_dict['chance']['malus']['min'] = li.get('data-malus-chance-min')
-        if not li.get('data-malus-chance-min') is None:
+        if li.get('data-malus-chance-min'):
             data_dict['chance']['malus']['max'] = li.get('data-malus-chance-max')
 
         # get intelligence resistance
-        if not li.get('data-bonus-fire-resistance-min') is None:
+        if li.get('data-bonus-fire-resistance-min'):
             data_dict['intelligence']['resistance']['bonus']['min'] = li.get('data-bonus-fire-resistance-min')
-        if not li.get('data-bonus-fire-resistance-max') is None:
+        if li.get('data-bonus-fire-resistance-max'):
             data_dict['intelligence']['resistance']['bonus']['max'] = li.get('data-bonus-fire-resistance-max')
 
         # get strength resistance
-        if not li.get('data-bonus-earth-resistance-min') is None:
+        if li.get('data-bonus-earth-resistance-min'):
             data_dict['strength']['resistance']['bonus']['min'] = li.get('data-bonus-earth-resistance-min')
-        if not li.get('data-bonus-earth-resistance-max') is None:
+        if li.get('data-bonus-earth-resistance-max'):
             data_dict['strength']['resistance']['bonus']['max'] = li.get('data-bonus-earth-resistance-max')
 
         # get water resistance
-        if not li.get('data-bonus-water-resistance-min') is None:
+        if li.get('data-bonus-water-resistance-min'):
             data_dict['chance']['resistance']['bonus']['min'] = li.get('data-bonus-water-resistance-min')
-        if not li.get('data-bonus-water-resistance-max') is None:
+        if li.get('data-bonus-water-resistance-max'):
             data_dict['chance']['resistance']['bonus']['max'] = li.get('data-bonus-water-resistance-max')
 
         # get agility resistance
-        if not li.get('data-bonus-air-resistance-min') is None:
+        if li.get('data-bonus-air-resistance-min'):
             data_dict['agility']['resistance']['bonus']['min'] = li.get('data-bonus-air-resistance-min')
-        if not li.get('data-bonus-air-resistance-max') is None:
+        if li.get('data-bonus-air-resistance-max'):
             data_dict['agility']['resistance']['bonus']['max'] = li.get('data-bonus-air-resistance-max')
 
         # get intelligence resistance percent
-        if not li.get('data-bonus-fire-resistance-percent-min') is None:
+        if li.get('data-bonus-fire-resistance-percent-min'):
             data_dict['intelligence']['resistance_percent']['bonus']['min'] = li.get('data-bonus-fire-resistance-percent-min')
-        if not li.get('data-bonus-fire-resistance-percent-max') is None:
+        if li.get('data-bonus-fire-resistance-percent-max'):
             data_dict['intelligence']['resistance_percent']['bonus']['max'] = li.get('data-bonus-fire-resistance-percent-max')
 
         # get strength resistance percent
-        if not li.get('data-bonus-earth-resistance-percent-min') is None:
+        if li.get('data-bonus-earth-resistance-percent-min'):
             data_dict['strength']['resistance_percent']['bonus']['min'] = li.get('data-bonus-earth-resistance-percent-min')
-        if not li.get('data-bonus-earth-resistance-percent-max') is None:
+        if li.get('data-bonus-earth-resistance-percent-max'):
             data_dict['strength']['resistance_percent']['bonus']['max'] = li.get('data-bonus-earth-resistance-percent-max')
 
         # get water resistance percent
-        if not li.get('data-bonus-water-resistance-percent-min') is None:
+        if li.get('data-bonus-water-resistance-percent-min'):
             data_dict['chance']['resistance_percent']['bonus']['min'] = li.get('data-bonus-water-resistance-percent-min')
-        if not li.get('data-bonus-water-resistance-percent-max') is None:
+        if li.get('data-bonus-water-resistance-percent-max'):
             data_dict['chance']['resistance_percent']['bonus']['max'] = li.get('data-bonus-water-resistance-percent-max')
 
         # get agility resistance percent
-        if not li.get('data-bonus-air-resistance-percent-min') is None:
+        if li.get('data-bonus-air-resistance-percent-min'):
             data_dict['agility']['resistance_percent']['bonus']['min'] = li.get('data-bonus-air-resistance-percent-min')
-        if not li.get('data-bonus-air-resistance-percent-max') is None:
+        if li.get('data-bonus-air-resistance-percent-max'):
             data_dict['agility']['resistance_percent']['bonus']['max'] = li.get('data-bonus-air-resistance-percent-max')
 
         # get critical
-        if not li.get('data-bonus-critical-hit-min') is None:
+        if li.get('data-bonus-critical-hit-min'):
             data_dict['critical']['bonus']['min'] = li.get('data-bonus-critical-hit-min')
-        if not li.get('data-bonus-critical-hit-max') is None:
+        if li.get('data-bonus-critical-hit-max'):
             data_dict['critical']['bonus']['max'] = li.get('data-bonus-critical-hit-max')
 
         # get range
-        if not li.get('data-bonus-range-min') is None:
+        if li.get('data-bonus-range-min'):
             data_dict['range']['bonus']['min'] = li.get('data-bonus-range-min')
-        if not li.get('data-bonus-range-max') is None:
+        if li.get('data-bonus-range-max'):
             data_dict['range']['bonus']['max'] = li.get('data-bonus-range-max')
 
         # get damage
-        if not li.get('data-bonus-damage-min') is None:
+        if li.get('data-bonus-damage-min'):
             data_dict['damage']['bonus']['min'] = li.get('data-bonus-damage-min')
-        if not li.get('data-bonus-damage-max') is None:
+        if li.get('data-bonus-damage-max'):
             data_dict['damage']['bonus']['max'] = li.get('data-bonus-damage-max')
 
+        # get damage percent
+        if li.get('data-bonus-damage-percent-min'):
+            data_dict['damage']['percent']['bonus']['min'] = li.get('data-bonus-damage-percent-min')
+        if li.get('data-bonus-damage-percent-max'):
+            data_dict['damage']['percent']['bonus']['max'] = li.get('data-bonus-damage-percent-max')
+
         # get initiative
-        if not li.get('data-bonus-initiative-min') is None:
+        if li.get('data-bonus-initiative-min'):
             data_dict['initiative']['bonus']['min'] = li.get('data-bonus-initiative-min')
-        if not li.get('data-bonus-initiative-min') is None:
+        if li.get('data-bonus-initiative-min'):
             data_dict['initiative']['bonus']['max'] = li.get('data-bonus-initiative-max')
 
         # get movementpoint
-        if not li.get('data-bonus-movementpoint-min') is None:
+        if li.get('data-bonus-movementpoint-min'):
             data_dict['movementpoint']['bonus']['min'] = li.get('data-bonus-movementpoint-min')
-        if not li.get('data-bonus-movementpoint-min') is None:
+        if li.get('data-bonus-movementpoint-min'):
             data_dict['movementpoint']['bonus']['max'] = li.get('data-bonus-movementpoint-max')
 
         # get actionpoint
-        if not li.get('data-bonus-actionpoint-min') is None:
+        if li.get('data-bonus-actionpoint-min'):
             data_dict['actionpoint']['bonus']['min'] = li.get('data-bonus-actionpoint-min')
-        if not li.get('data-bonus-actionpoint-min') is None:
+        if li.get('data-bonus-actionpoint-min'):
             data_dict['actionpoint']['bonus']['max'] = li.get('data-bonus-actionpoint-max')
+
+        # get pod
+        if li.get('data-bonus-pod-min'):
+            data_dict['pod']['bonus']['min'] = li.get('data-bonus-pod-min')
+        if li.get('data-bonus-pod-min'):
+            data_dict['pod']['bonus']['max'] = li.get('data-bonus-pod-max')
 
     return data_dict
