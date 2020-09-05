@@ -1,4 +1,4 @@
-.mypy_chache/
+.mypy_cache/
 .vscode/
 .idea/
 __pycache__
