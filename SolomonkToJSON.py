@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 from pprint import pprint
 
-BASE_URL: str = "https://solomonk.fr/fr/"
+BASE_URL: str   = "https://solomonk.fr/fr/"
 USER_AGENT: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"
 
 
@@ -23,7 +23,6 @@ def parse_stuff(url: str) -> json:
     json_data['name']   = parse_name(parsed_html)
     json_data['effect'] = parse_effect(parsed_html)
 
-    pprint(json_data)
     return json_data
 
 
@@ -50,7 +49,8 @@ if __name__ == "__main__":
     url: str = "https://solomonk.fr/fr/equipement/8285/coiffe-du-dragon-cochon"
     if check_url(url):
         data: json = parse_url(url)
-        with open(f"out/{data['id']}.json", "w") as f:
-            f.write(json.dumps(data))
+        pprint(data)
+        #with open(f"out/{data['id']}.json", "w") as f:
+        #    f.write(json.dumps(data))
     else:
         raise Exception('Incorrect url')
