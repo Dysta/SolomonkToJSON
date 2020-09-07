@@ -5,26 +5,32 @@ effect_list: list = [
     'data-bonus-vitality-max',
     'data-malus-vitality-min',
     'data-malus-vitality-max',
+
     'data-bonus-wisdom-min',
     'data-bonus-wisdom-max',
     'data-malus-wisdom-min',
     'data-malus-wisdom-max',
+
     'data-bonus-intelligence-min',
     'data-bonus-intelligence-max',
     'data-malus-intelligence-min',
     'data-malus-intelligence-max',
+
     'data-bonus-strength-min',
     'data-bonus-strength-max',
     'data-malus-strength-min',
     'data-malus-strength-max',
+
     'data-bonus-agility-min',
     'data-bonus-agility-max',
     'data-malus-agility-min',
     'data-malus-agility-max',
+
     'data-bonus-chance-min',
     'data-bonus-chance-max',
     'data-malus-chance-min',
     'data-malus-chance-max',
+
     'data-bonus-neutral-resistance-min',
     'data-bonus-neutral-resistance-max',
     'data-bonus-fire-resistance-min',
@@ -35,6 +41,17 @@ effect_list: list = [
     'data-bonus-water-resistance-max',
     'data-bonus-air-resistance-min',
     'data-bonus-air-resistance-max',
+    'data-malus-neutral-resistance-min',
+    'data-malus-neutral-resistance-max',
+    'data-malus-fire-resistance-min',
+    'data-malus-fire-resistance-max',
+    'data-malus-earth-resistance-min',
+    'data-malus-earth-resistance-max',
+    'data-malus-water-resistance-min',
+    'data-malus-water-resistance-max',
+    'data-malus-air-resistance-min',
+    'data-malus-air-resistance-max',
+
     'data-bonus-neutral-resistance-percent-min',
     'data-bonus-neutral-resistance-percent-max',
     'data-bonus-fire-resistance-percent-min',
@@ -45,30 +62,61 @@ effect_list: list = [
     'data-bonus-water-resistance-percent-max',
     'data-bonus-air-resistance-percent-min',
     'data-bonus-air-resistance-percent-max',
+    'data-malus-neutral-resistance-percent-min',
+    'data-malus-neutral-resistance-percent-max',
+    'data-malus-fire-resistance-percent-min',
+    'data-malus-fire-resistance-percent-max',
+    'data-malus-earth-resistance-percent-min',
+    'data-malus-earth-resistance-percent-max',
+    'data-malus-water-resistance-percent-min',
+    'data-malus-water-resistance-percent-max',
+    'data-malus-air-resistance-percent-min',
+    'data-malus-air-resistance-percent-max',
+
     'data-bonus-critical-hit-min',
     'data-bonus-critical-hit-max',
+
     'data-bonus-range-min',
     'data-bonus-range-max',
+
     'data-bonus-damage-min',
     'data-bonus-damage-max',
+
     'data-bonus-damage-percent-min',
     'data-bonus-damage-percent-max',
+
     'data-bonus-initiative-min',
     'data-bonus-initiative-max',
+
     'data-bonus-movementpoint-min',
     'data-bonus-movementpoint-max',
+    'data-malus-movementpoint-min',
+    'data-malus-movementpoint-max',
+
     'data-bonus-actionpoint-min',
     'data-bonus-actionpoint-max',
+    'data-malus-actionpoint-min',
+    'data-malus-actionpoint-max',
+
     'data-bonus-pod-min',
     'data-bonus-pod-max',
+
     'data-bonus-summon-min',
     'data-bonus-summon-max',
+
     'data-bonus-prospecting-min',
     'data-bonus-prospecting-max',
+
     'data-bonus-initiative-min',
     'data-bonus-initiative-max',
+
     'data-bonus-heal-min',
-    'data-bonus-heal-max'
+    'data-bonus-heal-max',
+
+    'data-bonus-trap-damage-min',
+    'data-bonus-trap-damage-max',
+    'data-bonus-trap-damage-percent-min',
+    'data-bonus-trap-damage-percent-max'
 ]
 
 def parse_name(parsed_html: BeautifulSoup) -> str:
@@ -148,6 +196,12 @@ def init_stuff_dict() -> dict:
     data['damage']['percent'] = {}
     data['damage']['percent']['bonus'] = {}
     data['damage']['percent']['malus'] = {}
+    data['damage']['trap'] = {}
+    data['damage']['trap']['bonus'] = {}
+    data['damage']['trap']['malus'] = {}
+    data['damage']['trap']['percent'] = {}
+    data['damage']['trap']['percent']['bonus'] = {}
+    data['damage']['trap']['percent']['malus'] = {}
 
     data['initiative'] = {}
     data['initiative']['bonus'] = {}
@@ -185,10 +239,16 @@ def init_stuff_dict() -> dict:
 
 def get_effect(current_data: dict, effect: str, li: str) -> dict:
     new_data: dict = current_data.copy()
+    print(effect)
 
-    if "damage-percent" in effect:
+    if "trap-damage-percent" in effect:
+        _, bn, tr, dm, pr, mm = effect.split('-')
+        new_data[dm][tr][pr][bn][mm] = li.get(effect)
+    elif "trap-damage" in effect:
+        _, bn, st, dm, mm = effect.split('-')
+        new_data[dm][st][bn][mm] = li.get(effect)
+    elif "damage-percent" in effect:
         _, bn, st, pr, mm = effect.split('-')
-
         new_data[st][pr][bn][mm] = li.get(effect)
     elif "percent" in effect:
         _, bn, st, rs, _, mm = effect.split('-')
@@ -212,6 +272,7 @@ def get_effect(current_data: dict, effect: str, li: str) -> dict:
         new_data[st][bn][mm] = li.get(effect)
     else:
         _, bn, st, mm = effect.split('-')
+
         new_data[st][bn][mm] = li.get(effect)
 
     return new_data

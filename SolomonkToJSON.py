@@ -46,7 +46,7 @@ def parse_url(url: str) -> json:
 
 
 if __name__ == "__main__":
-    url: str = "https://solomonk.fr/fr/equipement/8285/coiffe-du-dragon-cochon"
+    url: str = "https://solomonk.fr/fr/equipement/7921/couronne-du-tofu-royal"
     if check_url(url):
         data: json = parse_url(url)
         pprint(data)
