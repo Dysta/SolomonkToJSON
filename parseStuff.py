@@ -1,10 +1,79 @@
 from bs4 import BeautifulSoup, ResultSet
 
+effect_list: list = [
+    'data-bonus-vitality-min',
+    'data-bonus-vitality-max',
+    'data-malus-vitality-min',
+    'data-malus-vitality-max',
+    'data-bonus-wisdom-min',
+    'data-bonus-wisdom-max',
+    'data-malus-wisdom-min',
+    'data-malus-wisdom-max',
+    'data-bonus-intelligence-min',
+    'data-bonus-intelligence-max',
+    'data-malus-intelligence-min',
+    'data-malus-intelligence-max',
+    'data-bonus-strength-min',
+    'data-bonus-strength-max',
+    'data-malus-strength-min',
+    'data-malus-strength-max',
+    'data-bonus-agility-min',
+    'data-bonus-agility-max',
+    'data-malus-agility-min',
+    'data-malus-agility-max',
+    'data-bonus-chance-min',
+    'data-bonus-chance-max',
+    'data-malus-chance-min',
+    'data-malus-chance-max',
+    'data-bonus-neutral-resistance-min',
+    'data-bonus-neutral-resistance-max',
+    'data-bonus-fire-resistance-min',
+    'data-bonus-fire-resistance-max',
+    'data-bonus-earth-resistance-min',
+    'data-bonus-earth-resistance-max',
+    'data-bonus-water-resistance-min',
+    'data-bonus-water-resistance-max',
+    'data-bonus-air-resistance-min',
+    'data-bonus-air-resistance-max',
+    'data-bonus-neutral-resistance-percent-min',
+    'data-bonus-neutral-resistance-percent-max',
+    'data-bonus-fire-resistance-percent-min',
+    'data-bonus-fire-resistance-percent-max',
+    'data-bonus-earth-resistance-percent-min',
+    'data-bonus-earth-resistance-percent-max',
+    'data-bonus-water-resistance-percent-min',
+    'data-bonus-water-resistance-percent-max',
+    'data-bonus-air-resistance-percent-min',
+    'data-bonus-air-resistance-percent-max',
+    'data-bonus-critical-hit-min',
+    'data-bonus-critical-hit-max',
+    'data-bonus-range-min',
+    'data-bonus-range-max',
+    'data-bonus-damage-min',
+    'data-bonus-damage-max',
+    'data-bonus-damage-percent-min',
+    'data-bonus-damage-percent-max',
+    'data-bonus-initiative-min',
+    'data-bonus-initiative-max',
+    'data-bonus-movementpoint-min',
+    'data-bonus-movementpoint-max',
+    'data-bonus-actionpoint-min',
+    'data-bonus-actionpoint-max',
+    'data-bonus-pod-min',
+    'data-bonus-pod-max',
+    'data-bonus-summon-min',
+    'data-bonus-summon-max',
+    'data-bonus-prospecting-min',
+    'data-bonus-prospecting-max',
+    'data-bonus-initiative-min',
+    'data-bonus-initiative-max',
+    'data-bonus-heal-min',
+    'data-bonus-heal-max'
+]
 
 def parse_name(parsed_html: BeautifulSoup) -> str:
     data = parsed_html.find('div', attrs={'class': 'card-solo-item-title'})
     return data.a.string
-
 
 def init_stuff_dict() -> dict:
     data: dict = {}
@@ -16,6 +85,14 @@ def init_stuff_dict() -> dict:
     data['wisdom'] = {}
     data['wisdom']['bonus'] = {}
     data['wisdom']['malus'] = {}
+
+    data['neutral'] = {}
+    data['neutral']['resistance'] = {}
+    data['neutral']['resistance']['bonus'] = {}
+    data['neutral']['resistance']['malus'] = {}
+    data['neutral']['resistance_percent'] = {}
+    data['neutral']['resistance_percent']['bonus'] = {}
+    data['neutral']['resistance_percent']['malus'] = {}
 
     data['intelligence'] = {}
     data['intelligence']['bonus'] = {}
@@ -88,8 +165,56 @@ def init_stuff_dict() -> dict:
     data['pod']['bonus'] = {}
     data['pod']['malus'] = {}
 
+    data['summon'] = {}
+    data['summon']['bonus'] = {}
+    data['summon']['malus'] = {}
+
+    data['prospecting'] = {}
+    data['prospecting']['bonus'] = {}
+    data['prospecting']['malus'] = {}
+
+    data['initiative'] = {}
+    data['initiative']['bonus'] = {}
+    data['initiative']['malus'] = {}
+
+    data['heal'] = {}
+    data['heal']['bonus'] = {}
+    data['heal']['malus'] = {}
+
     return data
 
+def get_effect(current_data: dict, effect: str, li: str) -> dict:
+    new_data: dict = current_data.copy()
+
+    if "damage-percent" in effect:
+        _, bn, st, pr, mm = effect.split('-')
+
+        new_data[st][pr][bn][mm] = li.get(effect)
+    elif "percent" in effect:
+        _, bn, st, rs, _, mm = effect.split('-')
+        st = "intelligence" if st == "fire" else st
+        st = "chance" if st == "water" else st
+        st = "strength" if st == "earth" else st
+        st = "agility" if st == "air" else st
+        rs = rs + "_percent"
+
+        new_data[st][rs][bn][mm] = li.get(effect)
+    elif "resistance" in effect:
+        _, bn, st, rs, mm = effect.split('-')
+        st = "intelligence" if st == "fire" else st
+        st = "chance" if st == "water" else st
+        st = "strength" if st == "earth" else st
+        st = "agility" if st == "air" else st
+
+        new_data[st][rs][bn][mm] = li.get(effect)
+    elif "hit" in effect:
+        _, bn, st, _, mm = effect.split('-')
+        new_data[st][bn][mm] = li.get(effect)
+    else:
+        _, bn, st, mm = effect.split('-')
+        new_data[st][bn][mm] = li.get(effect)
+
+    return new_data
 
 def parse_effect(parsed_html: BeautifulSoup) -> dict:
     data: ResultSet = parsed_html.find_all('li')
@@ -98,166 +223,8 @@ def parse_effect(parsed_html: BeautifulSoup) -> dict:
 
     data_dict: dict = init_stuff_dict()
     for li in data:
-        # get vitality
-        if li.get('data-bonus-vitality-min'):
-            data_dict['vitality']['bonus']['min'] = li.get('data-bonus-vitality-min')
-        if li.get('data-bonus-vitality-min'):
-            data_dict['vitality']['bonus']['max'] = li.get('data-bonus-vitality-max')
-        # malus
-        if li.get('data-malus-vitality-min'):
-            data_dict['vitality']['malus']['min'] = li.get('data-malus-vitality-min')
-        if li.get('data-malus-vitality-min'):
-            data_dict['vitality']['malus']['max'] = li.get('data-malus-vitality-max')
-
-        # get wisdom
-        if li.get('data-bonus-wisdom-min'):
-            data_dict['wisdom']['bonus']['min'] = li.get('data-bonus-wisdom-min')
-        if li.get('data-bonus-wisdom-min'):
-            data_dict['wisdom']['bonus']['max'] = li.get('data-bonus-wisdom-max')
-        # malus
-        if li.get('data-malus-wisdom-min'):
-            data_dict['wisdom']['malus']['min'] = li.get('data-malus-wisdom-min')
-        if li.get('data-malus-wisdom-min'):
-            data_dict['wisdom']['malus']['max'] = li.get('data-malus-wisdom-max')
-
-        # get intelligence
-        if li.get('data-bonus-intelligence-min'):
-            data_dict['intelligence']['bonus']['min'] = li.get('data-bonus-intelligence-min')
-        if li.get('data-bonus-intelligence-max'):
-            data_dict['intelligence']['bonus']['max'] = li.get('data-bonus-intelligence-max')
-        # malus
-        if li.get('data-malus-intelligence-min'):
-            data_dict['intelligence']['malus']['min'] = li.get('data-malus-intelligence-min')
-        if li.get('data-malus-intelligence-max'):
-            data_dict['intelligence']['malus']['max'] = li.get('data-malus-intelligence-max')
-
-        # get strength
-        if li.get('data-bonus-strength-min'):
-            data_dict['strength']['bonus']['min'] = li.get('data-bonus-strength-min')
-        if li.get('data-bonus-strength-max'):
-            data_dict['strength']['bonus']['max'] = li.get('data-bonus-strength-max')
-        # malus
-        if li.get('data-malus-strength-min'):
-            data_dict['strength']['malus']['min'] = li.get('data-malus-strength-min')
-        if li.get('data-malus-strength-max'):
-            data_dict['strength']['malus']['max'] = li.get('data-malus-strength-max')
-
-        # get agility
-        if li.get('data-bonus-agility-min'):
-            data_dict['agility']['bonus']['min'] = li.get('data-bonus-agility-min')
-        if li.get('data-bonus-agility-min'):
-            data_dict['agility']['bonus']['max'] = li.get('data-bonus-agility-max')
-        # malus
-        if li.get('data-malus-agility-min'):
-            data_dict['agility']['malus']['min'] = li.get('data-malus-agility-min')
-        if li.get('data-malus-agility-min'):
-            data_dict['agility']['malus']['max'] = li.get('data-malus-agility-max')
-
-        # get chance
-        if li.get('data-bonus-chance-min'):
-            data_dict['chance']['bonus']['min'] = li.get('data-bonus-chance-min')
-        if li.get('data-bonus-chance-min'):
-            data_dict['chance']['bonus']['max'] = li.get('data-bonus-chance-max')
-        # malus
-        if li.get('data-malus-chance-min'):
-            data_dict['chance']['malus']['min'] = li.get('data-malus-chance-min')
-        if li.get('data-malus-chance-min'):
-            data_dict['chance']['malus']['max'] = li.get('data-malus-chance-max')
-
-        # get intelligence resistance
-        if li.get('data-bonus-fire-resistance-min'):
-            data_dict['intelligence']['resistance']['bonus']['min'] = li.get('data-bonus-fire-resistance-min')
-        if li.get('data-bonus-fire-resistance-max'):
-            data_dict['intelligence']['resistance']['bonus']['max'] = li.get('data-bonus-fire-resistance-max')
-
-        # get strength resistance
-        if li.get('data-bonus-earth-resistance-min'):
-            data_dict['strength']['resistance']['bonus']['min'] = li.get('data-bonus-earth-resistance-min')
-        if li.get('data-bonus-earth-resistance-max'):
-            data_dict['strength']['resistance']['bonus']['max'] = li.get('data-bonus-earth-resistance-max')
-
-        # get water resistance
-        if li.get('data-bonus-water-resistance-min'):
-            data_dict['chance']['resistance']['bonus']['min'] = li.get('data-bonus-water-resistance-min')
-        if li.get('data-bonus-water-resistance-max'):
-            data_dict['chance']['resistance']['bonus']['max'] = li.get('data-bonus-water-resistance-max')
-
-        # get agility resistance
-        if li.get('data-bonus-air-resistance-min'):
-            data_dict['agility']['resistance']['bonus']['min'] = li.get('data-bonus-air-resistance-min')
-        if li.get('data-bonus-air-resistance-max'):
-            data_dict['agility']['resistance']['bonus']['max'] = li.get('data-bonus-air-resistance-max')
-
-        # get intelligence resistance percent
-        if li.get('data-bonus-fire-resistance-percent-min'):
-            data_dict['intelligence']['resistance_percent']['bonus']['min'] = li.get('data-bonus-fire-resistance-percent-min')
-        if li.get('data-bonus-fire-resistance-percent-max'):
-            data_dict['intelligence']['resistance_percent']['bonus']['max'] = li.get('data-bonus-fire-resistance-percent-max')
-
-        # get strength resistance percent
-        if li.get('data-bonus-earth-resistance-percent-min'):
-            data_dict['strength']['resistance_percent']['bonus']['min'] = li.get('data-bonus-earth-resistance-percent-min')
-        if li.get('data-bonus-earth-resistance-percent-max'):
-            data_dict['strength']['resistance_percent']['bonus']['max'] = li.get('data-bonus-earth-resistance-percent-max')
-
-        # get water resistance percent
-        if li.get('data-bonus-water-resistance-percent-min'):
-            data_dict['chance']['resistance_percent']['bonus']['min'] = li.get('data-bonus-water-resistance-percent-min')
-        if li.get('data-bonus-water-resistance-percent-max'):
-            data_dict['chance']['resistance_percent']['bonus']['max'] = li.get('data-bonus-water-resistance-percent-max')
-
-        # get agility resistance percent
-        if li.get('data-bonus-air-resistance-percent-min'):
-            data_dict['agility']['resistance_percent']['bonus']['min'] = li.get('data-bonus-air-resistance-percent-min')
-        if li.get('data-bonus-air-resistance-percent-max'):
-            data_dict['agility']['resistance_percent']['bonus']['max'] = li.get('data-bonus-air-resistance-percent-max')
-
-        # get critical
-        if li.get('data-bonus-critical-hit-min'):
-            data_dict['critical']['bonus']['min'] = li.get('data-bonus-critical-hit-min')
-        if li.get('data-bonus-critical-hit-max'):
-            data_dict['critical']['bonus']['max'] = li.get('data-bonus-critical-hit-max')
-
-        # get range
-        if li.get('data-bonus-range-min'):
-            data_dict['range']['bonus']['min'] = li.get('data-bonus-range-min')
-        if li.get('data-bonus-range-max'):
-            data_dict['range']['bonus']['max'] = li.get('data-bonus-range-max')
-
-        # get damage
-        if li.get('data-bonus-damage-min'):
-            data_dict['damage']['bonus']['min'] = li.get('data-bonus-damage-min')
-        if li.get('data-bonus-damage-max'):
-            data_dict['damage']['bonus']['max'] = li.get('data-bonus-damage-max')
-
-        # get damage percent
-        if li.get('data-bonus-damage-percent-min'):
-            data_dict['damage']['percent']['bonus']['min'] = li.get('data-bonus-damage-percent-min')
-        if li.get('data-bonus-damage-percent-max'):
-            data_dict['damage']['percent']['bonus']['max'] = li.get('data-bonus-damage-percent-max')
-
-        # get initiative
-        if li.get('data-bonus-initiative-min'):
-            data_dict['initiative']['bonus']['min'] = li.get('data-bonus-initiative-min')
-        if li.get('data-bonus-initiative-min'):
-            data_dict['initiative']['bonus']['max'] = li.get('data-bonus-initiative-max')
-
-        # get movementpoint
-        if li.get('data-bonus-movementpoint-min'):
-            data_dict['movementpoint']['bonus']['min'] = li.get('data-bonus-movementpoint-min')
-        if li.get('data-bonus-movementpoint-min'):
-            data_dict['movementpoint']['bonus']['max'] = li.get('data-bonus-movementpoint-max')
-
-        # get actionpoint
-        if li.get('data-bonus-actionpoint-min'):
-            data_dict['actionpoint']['bonus']['min'] = li.get('data-bonus-actionpoint-min')
-        if li.get('data-bonus-actionpoint-min'):
-            data_dict['actionpoint']['bonus']['max'] = li.get('data-bonus-actionpoint-max')
-
-        # get pod
-        if li.get('data-bonus-pod-min'):
-            data_dict['pod']['bonus']['min'] = li.get('data-bonus-pod-min')
-        if li.get('data-bonus-pod-min'):
-            data_dict['pod']['bonus']['max'] = li.get('data-bonus-pod-max')
+        for effect in effect_list:
+            if li.get(effect):
+                data_dict = get_effect(data_dict, effect, li)
 
     return data_dict
