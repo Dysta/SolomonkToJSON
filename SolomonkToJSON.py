@@ -1,7 +1,7 @@
 import json
 import re
 
-from parseStuff import parse_effect, parse_name
+from parseStuff import parse_effect, parse_name, parse_condition
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 from pprint import pprint
@@ -19,9 +19,10 @@ def parse_stuff(url: str) -> json:
     parsed_html: BeautifulSoup = BeautifulSoup(html, "html.parser")
 
     json_data: dict = {}
-    json_data['id']     = int(re.search(r'\d+', url).group())
-    json_data['name']   = parse_name(parsed_html)
-    json_data['effect'] = parse_effect(parsed_html)
+    json_data['id']         = int(re.search(r'\d+', url).group())
+    json_data['name']       = parse_name(parsed_html)
+    json_data['effect']     = parse_effect(parsed_html)
+    json_data['condition']  = parse_condition(parsed_html)
 
     return json_data
 
@@ -46,7 +47,7 @@ def parse_url(url: str) -> json:
 
 
 if __name__ == "__main__":
-    url: str = "https://solomonk.fr/fr/equipement/7921/couronne-du-tofu-royal"
+    url: str = "https://solomonk.fr/fr/equipement/8867/cape-de-la-meupette"
     if check_url(url):
         data: json = parse_url(url)
         pprint(data)

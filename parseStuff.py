@@ -239,7 +239,6 @@ def init_stuff_dict() -> dict:
 
 def get_effect(current_data: dict, effect: str, li: str) -> dict:
     new_data: dict = current_data.copy()
-    print(effect)
 
     if "trap-damage-percent" in effect:
         _, bn, tr, dm, pr, mm = effect.split('-')
@@ -277,15 +276,27 @@ def get_effect(current_data: dict, effect: str, li: str) -> dict:
 
     return new_data
 
+
 def parse_effect(parsed_html: BeautifulSoup) -> dict:
-    data: ResultSet = parsed_html.find_all('li')
+    data: ResultSet = parsed_html.find_all('ul', attrs={'class': 'list-unstyled'})
     if not data:
         return {}
 
     data_dict: dict = init_stuff_dict()
-    for li in data:
+    for li in data[0].children:
         for effect in effect_list:
             if li.get(effect):
                 data_dict = get_effect(data_dict, effect, li)
 
     return data_dict
+
+
+def parse_condition(parsed_html: BeautifulSoup) -> list:
+    data: ResultSet = parsed_html.find_all('ul', attrs={'class': 'list-unstyled'})
+    data_list: list = []
+
+    if len(data) > 1:
+        for li in data[1].children:
+            data_list.append(li.string)
+
+    return data_list
