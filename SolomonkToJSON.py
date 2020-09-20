@@ -1,7 +1,7 @@
 import json
 import re
+import parseStuff
 
-from parseStuff import parse_effect, parse_name, parse_condition
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 from pprint import pprint
@@ -10,21 +10,22 @@ BASE_URL: str   = "https://solomonk.fr/fr/"
 USER_AGENT: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"
 
 
-def parse_stuff(url: str) -> json:
+def parse_stuff(url: str) -> dict:
     print(f'parsing url : {url}')
     headers: dict = {}
     headers['User-Agent'] = USER_AGENT
     req: Request = Request(url, headers=headers)
-    html: str = urlopen(req, timeout=2.0).read()
+    html: str = urlopen(req, timeout=3.0).read()
     parsed_html: BeautifulSoup = BeautifulSoup(html, "html.parser")
 
-    json_data: dict = {}
-    json_data['id']         = int(re.search(r'\d+', url).group())
-    json_data['name']       = parse_name(parsed_html)
-    json_data['effect']     = parse_effect(parsed_html)
-    json_data['condition']  = parse_condition(parsed_html)
+    item_data: dict = {}
+    item_data['id']         = int(re.search(r'\d+', url).group())
+    item_data['name']       = parseStuff.parse_name(parsed_html)
+    item_data['effect']     = parseStuff.parse_effect(parsed_html)
+    item_data['condition']  = parseStuff.parse_condition(parsed_html)
+    item_data['recipe']     = parseStuff.parse_recipe(parsed_html)
 
-    return json_data
+    return item_data
 
 
 def parse_monster(url):
@@ -37,7 +38,7 @@ def check_url(url: str) -> bool:
     return True
 
 
-def parse_url(url: str) -> json:
+def parse_url(url: str) -> dict:
     if "equipement" in url:
         return parse_stuff(url)
     if "monstre" in url:
@@ -47,9 +48,9 @@ def parse_url(url: str) -> json:
 
 
 if __name__ == "__main__":
-    url: str = "https://solomonk.fr/fr/equipement/8867/cape-de-la-meupette"
+    url: str = "https://solomonk.fr/fr/equipement/8231/cape-du-piou-rouge"
     if check_url(url):
-        data: json = parse_url(url)
+        data: dict = parse_url(url)
         pprint(data)
         #with open(f"out/{data['id']}.json", "w") as f:
         #    f.write(json.dumps(data))
