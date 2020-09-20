@@ -1,4 +1,6 @@
-from bs4 import BeautifulSoup, ResultSet
+import re
+
+from bs4 import BeautifulSoup, ResultSet, NavigableString
 
 effect_list: list = [
     'data-bonus-vitality-min',
@@ -237,6 +239,7 @@ def init_stuff_dict() -> dict:
 
     return data
 
+
 def get_effect(current_data: dict, effect: str, li: str) -> dict:
     new_data: dict = current_data.copy()
 
@@ -300,3 +303,27 @@ def parse_condition(parsed_html: BeautifulSoup) -> list:
             data_list.append(li.string)
 
     return data_list
+
+
+def parse_recipe(parsed_html: BeautifulSoup) -> list:
+    data: NavigableString = parsed_html.find('div', attrs={'class': 'list-craft'})
+    if not data:
+        return []
+
+    recipe_data: list = []
+    all_link: ResultSet = data.find_all('a')
+    for a in all_link:
+        tmp_dict = {}
+        tmp_dict['id']       = int(re.search(r'\d+', a.get('href')).group())
+        tmp_dict['name']     = a.string
+        tmp_dict['quantity'] = 0
+        recipe_data.append(tmp_dict)
+
+    i: int = 0
+    for string in data.strings:
+        if 'x' in string:
+            quantity: int = int(re.search(r'\d+', string).group())
+            recipe_data[i]['quantity'] = quantity
+            i += 1
+
+    return recipe_data
