@@ -49,7 +49,7 @@ def parse_url(url: str) -> dict:
 
 
 if __name__ == "__main__":
-    url: str = "https://solomonk.fr/fr/equipement/6660/chapeau-du-marie"
+    url: str = "https://solomonk.fr/fr/equipement/9021/bouclier-du-captain-amakna"
     if check_url(url):
         data: dict = parse_url(url)
         pprint(data)

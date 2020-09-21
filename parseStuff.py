@@ -2,6 +2,7 @@ import re
 
 from bs4 import BeautifulSoup, ResultSet, NavigableString
 
+
 effect_list: list = [
     'data-bonus-vitality-min',
     'data-bonus-vitality-max',
@@ -75,6 +76,48 @@ effect_list: list = [
     'data-malus-air-resistance-percent-min',
     'data-malus-air-resistance-percent-max',
 
+    'data-bonus-fighters-neutral-resistance-min',
+    'data-bonus-fighters-neutral-resistance-max',
+    'data-bonus-fighters-fire-resistance-min',
+    'data-bonus-fighters-fire-resistance-max',
+    'data-bonus-fighters-earth-resistance-min',
+    'data-bonus-fighters-earth-resistance-max',
+    'data-bonus-fighters-water-resistance-min',
+    'data-bonus-fighters-water-resistance-max',
+    'data-bonus-fighters-air-resistance-min',
+    'data-bonus-fighters-air-resistance-max',
+    'data-malus-fighters-neutral-resistance-min',
+    'data-malus-fighters-neutral-resistance-max',
+    'data-malus-fighters-fire-resistance-min',
+    'data-malus-fighters-fire-resistance-max',
+    'data-malus-fighters-earth-resistance-min',
+    'data-malus-fighters-earth-resistance-max',
+    'data-malus-fighters-water-resistance-min',
+    'data-malus-fighters-water-resistance-max',
+    'data-malus-fighters-air-resistance-min',
+    'data-malus-fighters-air-resistance-max',
+
+    'data-bonus-fighters-neutral-resistance-percent-min',
+    'data-bonus-fighters-neutral-resistance-percent-max',
+    'data-bonus-fighters-fire-resistance-percent-min',
+    'data-bonus-fighters-fire-resistance-percent-max',
+    'data-bonus-fighters-earth-resistance-percent-min',
+    'data-bonus-fighters-earth-resistance-percent-max',
+    'data-bonus-fighters-water-resistance-percent-min',
+    'data-bonus-fighters-water-resistance-percent-max',
+    'data-bonus-fighters-air-resistance-percent-min',
+    'data-bonus-fighters-air-resistance-percent-max',
+    'data-malus-fighters-neutral-resistance-percent-min',
+    'data-malus-fighters-neutral-resistance-percent-max',
+    'data-malus-fighters-fire-resistance-percent-min',
+    'data-malus-fighters-fire-resistance-percent-max',
+    'data-malus-fighters-earth-resistance-percent-min',
+    'data-malus-fighters-earth-resistance-percent-max',
+    'data-malus-fighters-water-resistance-percent-min',
+    'data-malus-fighters-water-resistance-percent-max',
+    'data-malus-fighters-air-resistance-percent-min',
+    'data-malus-fighters-air-resistance-percent-max',
+
     'data-bonus-critical-hit-min',
     'data-bonus-critical-hit-max',
 
@@ -125,6 +168,23 @@ def parse_name(parsed_html: BeautifulSoup) -> str:
     data = parsed_html.find('div', attrs={'class': 'card-solo-item-title'})
     return data.a.string
 
+
+def init_stuff_dict2() -> dict:
+    data: dict = {}
+    for effect in effect_list:
+
+        tmp = effect.split('-')
+        _, bonus_malus, field = tmp[0], tmp[1], tmp[2:]
+
+        data.setdefault(bonus_malus, {})
+        d = data[bonus_malus]
+        for f in field:
+            d.setdefault(f, {})
+            d = d[f]
+
+    return data
+
+
 def init_stuff_dict() -> dict:
     data: dict = {}
 
@@ -143,6 +203,12 @@ def init_stuff_dict() -> dict:
     data['neutral']['resistance_percent'] = {}
     data['neutral']['resistance_percent']['bonus'] = {}
     data['neutral']['resistance_percent']['malus'] = {}
+    data['neutral']['resistance']['fighters'] = {}
+    data['neutral']['resistance']['fighters']['bonus'] = {}
+    data['neutral']['resistance']['fighters']['malus'] = {}
+    data['neutral']['resistance_percent']['fighters'] = {}
+    data['neutral']['resistance_percent']['fighters']['bonus'] = {}
+    data['neutral']['resistance_percent']['fighters']['malus'] = {}
 
     data['intelligence'] = {}
     data['intelligence']['bonus'] = {}
@@ -153,6 +219,12 @@ def init_stuff_dict() -> dict:
     data['intelligence']['resistance_percent'] = {}
     data['intelligence']['resistance_percent']['bonus'] = {}
     data['intelligence']['resistance_percent']['malus'] = {}
+    data['intelligence']['resistance']['fighters'] = {}
+    data['intelligence']['resistance']['fighters']['bonus'] = {}
+    data['intelligence']['resistance']['fighters']['malus'] = {}
+    data['intelligence']['resistance_percent']['fighters'] = {}
+    data['intelligence']['resistance_percent']['fighters']['bonus'] = {}
+    data['intelligence']['resistance_percent']['fighters']['malus'] = {}
 
     data['strength'] = {}
     data['strength']['bonus'] = {}
@@ -163,6 +235,12 @@ def init_stuff_dict() -> dict:
     data['strength']['resistance_percent'] = {}
     data['strength']['resistance_percent']['bonus'] = {}
     data['strength']['resistance_percent']['malus'] = {}
+    data['strength']['resistance']['fighters'] = {}
+    data['strength']['resistance']['fighters']['bonus'] = {}
+    data['strength']['resistance']['fighters']['malus'] = {}
+    data['strength']['resistance_percent']['fighters'] = {}
+    data['strength']['resistance_percent']['fighters']['bonus'] = {}
+    data['strength']['resistance_percent']['fighters']['malus'] = {}
 
     data['agility'] = {}
     data['agility']['bonus'] = {}
@@ -173,6 +251,12 @@ def init_stuff_dict() -> dict:
     data['agility']['resistance_percent'] = {}
     data['agility']['resistance_percent']['bonus'] = {}
     data['agility']['resistance_percent']['malus'] = {}
+    data['agility']['resistance']['fighters'] = {}
+    data['agility']['resistance']['fighters']['bonus'] = {}
+    data['agility']['resistance']['fighters']['malus'] = {}
+    data['agility']['resistance_percent']['fighters'] = {}
+    data['agility']['resistance_percent']['fighters']['bonus'] = {}
+    data['agility']['resistance_percent']['fighters']['malus'] = {}
 
     data['chance'] = {}
     data['chance']['bonus'] = {}
@@ -183,6 +267,12 @@ def init_stuff_dict() -> dict:
     data['chance']['resistance_percent'] = {}
     data['chance']['resistance_percent']['bonus'] = {}
     data['chance']['resistance_percent']['malus'] = {}
+    data['chance']['resistance']['fighters'] = {}
+    data['chance']['resistance']['fighters']['bonus'] = {}
+    data['chance']['resistance']['fighters']['malus'] = {}
+    data['chance']['resistance_percent']['fighters'] = {}
+    data['chance']['resistance_percent']['fighters']['bonus'] = {}
+    data['chance']['resistance_percent']['fighters']['malus'] = {}
 
     data['range'] = {}
     data['range']['bonus'] = {}
@@ -252,6 +342,22 @@ def get_effect(current_data: dict, effect: str, li: str) -> dict:
     elif "damage-percent" in effect:
         _, bn, st, pr, mm = effect.split('-')
         new_data[st][pr][bn][mm] = li.get(effect)
+    elif "fighters" in effect and "percent" in effect:
+        _, bn, ft, st, rs, pr, mm = effect.split('-')
+        st = "intelligence" if st == "fire" else st
+        st = "chance" if st == "water" else st
+        st = "strength" if st == "earth" else st
+        st = "agility" if st == "air" else st
+        rs = rs + "_percent"
+        new_data[st][rs][ft][bn][mm] = li.get(effect)
+
+    elif "fighters" in effect:
+        _, bn, ft, st, rs, mm = effect.split('-')
+        st = "intelligence" if st == "fire" else st
+        st = "chance" if st == "water" else st
+        st = "strength" if st == "earth" else st
+        st = "agility" if st == "air" else st
+        new_data[st][rs][ft][bn][mm] = li.get(effect)
     elif "percent" in effect:
         _, bn, st, rs, _, mm = effect.split('-')
         st = "intelligence" if st == "fire" else st
@@ -259,7 +365,6 @@ def get_effect(current_data: dict, effect: str, li: str) -> dict:
         st = "strength" if st == "earth" else st
         st = "agility" if st == "air" else st
         rs = rs + "_percent"
-
         new_data[st][rs][bn][mm] = li.get(effect)
     elif "resistance" in effect:
         _, bn, st, rs, mm = effect.split('-')
@@ -321,7 +426,7 @@ def parse_recipe(parsed_html: BeautifulSoup) -> list:
 
     i: int = 0
     for string in data.strings:
-        if 'x' in string:
+        if re.match(r'(, )?\d+x', string):
             quantity: int = int(re.search(r'\d+', string).group())
             recipe_data[i]['quantity'] = quantity
             i += 1
