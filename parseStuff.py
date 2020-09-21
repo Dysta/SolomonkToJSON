@@ -164,6 +164,7 @@ effect_list: list = [
     'data-bonus-trap-damage-percent-max'
 ]
 
+
 def parse_name(parsed_html: BeautifulSoup) -> str:
     data = parsed_html.find('div', attrs={'class': 'card-solo-item-title'})
     return data.a.string

@@ -45,15 +45,18 @@ def parse_url(url: str) -> dict:
     if "monstre" in url:
         return parse_monster(url)
 
-    return ""
+    return {}
 
 
 if __name__ == "__main__":
     url: str = "https://solomonk.fr/fr/equipement/9021/bouclier-du-captain-amakna"
+    export: bool = True
     if check_url(url):
         data: dict = parse_url(url)
-        pprint(data)
-        #with open(f"out/{data['id']}.json", "w") as f:
-        #    f.write(json.dumps(data))
+        if data:
+            pprint(data)
+            if export:
+                with open(f"out/{data['id']}.json", "w") as f:
+                    f.write(json.dumps(data))
     else:
         raise Exception('Incorrect url')
