@@ -327,3 +327,8 @@ def parse_recipe(parsed_html: BeautifulSoup) -> list:
             i += 1
 
     return recipe_data
+
+
+def parse_description(parsed_html: BeautifulSoup) -> str:
+    data: NavigableString = parsed_html.find('div', attrs={'class': 'card-solo-item-description'})
+    return data.string

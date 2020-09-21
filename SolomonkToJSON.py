@@ -19,11 +19,12 @@ def parse_stuff(url: str) -> dict:
     parsed_html: BeautifulSoup = BeautifulSoup(html, "html.parser")
 
     item_data: dict = {}
-    item_data['id']         = int(re.search(r'\d+', url).group())
-    item_data['name']       = parseStuff.parse_name(parsed_html)
-    item_data['effect']     = parseStuff.parse_effect(parsed_html)
-    item_data['condition']  = parseStuff.parse_condition(parsed_html)
-    item_data['recipe']     = parseStuff.parse_recipe(parsed_html)
+    item_data['id']          = int(re.search(r'\d+', url).group())
+    item_data['name']        = parseStuff.parse_name(parsed_html)
+    item_data['effect']      = parseStuff.parse_effect(parsed_html)
+    item_data['condition']   = parseStuff.parse_condition(parsed_html)
+    item_data['recipe']      = parseStuff.parse_recipe(parsed_html)
+    item_data['description'] = parseStuff.parse_description(parsed_html)
 
     return item_data
 
@@ -48,7 +49,7 @@ def parse_url(url: str) -> dict:
 
 
 if __name__ == "__main__":
-    url: str = "https://solomonk.fr/fr/equipement/8231/cape-du-piou-rouge"
+    url: str = "https://solomonk.fr/fr/equipement/6660/chapeau-du-marie"
     if check_url(url):
         data: dict = parse_url(url)
         pprint(data)
