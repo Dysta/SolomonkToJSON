@@ -1,5 +1,12 @@
+# Linters
 .mypy_cache/
+
+# Python
+__pycache__/
+
+# IDE
 .vscode/
 .idea/
-__pycache__
+
+# App files
 out/
